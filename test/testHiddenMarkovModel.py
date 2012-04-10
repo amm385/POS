@@ -50,7 +50,6 @@ class Test(unittest.TestCase):
         expected = {('<s>', '<s>'):1.0, ('Pierre', 'NNP'):.5, (',',','):1.0, ('years', 'CD'): .666}
         
         for key in expected:
-            print str(key)+'test'
             self.assertAlmostEqual(hmm.getLikelihoodProbability(*key), expected[key], delta=.01)
         
     
