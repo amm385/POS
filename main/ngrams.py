@@ -55,6 +55,9 @@ class Unigram():
 		self.frequencies = None
 		self.unigrams = None
 		
+		self.get_frequencies()
+		self.get_probabilities()
+		
 	def get_num_tokens(self):
 		return len(self.tokens)
 	
@@ -149,6 +152,8 @@ class Bigram():
 		
 		#Probabilities
 		self.bigrams = None
+		
+		self.get_frequencies()
 		
 	def get_num_tokens(self):
 		return len(self.tokens)

@@ -36,6 +36,7 @@ class Test(unittest.TestCase):
         hmm = HiddenMarkovModel(filename=filename)
         self.assertAlmostEqual(hmm.getPriorProbability((',', 'CD')), .5, delta=.1)
     
+    @unittest.skip("Skipping")
     def testBuckets(self):
         filename = "../train-test-likelihood.pos"
         hmm = HiddenMarkovModel(filename=filename)

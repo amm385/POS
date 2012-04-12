@@ -1,0 +1,75 @@
+Viterbi on 10 lines before optimization
+run("viterbi(hmm, filename='test-obs-sample.pos')")
+         50862184 function calls in 156.984 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000  156.984  156.984 <string>:1(<module>)
+     5050    0.018    0.000    0.055    0.000 HMM.py:30(getPriorProbability)
+     2550    0.030    0.000  156.894    0.062 HMM.py:33(getLikelihoodProbability)
+ 50834709   74.216    0.000   74.216    0.000 HMM.py:38(<lambda>)
+     5050    0.011    0.000    0.011    0.000 ngrams.py:161(get_frequencies)
+     5050    0.026    0.000    0.037    0.000 ngrams.py:274(get_probability)
+        1    0.021    0.021  156.984  156.984 viterbi.py:29(viterbi)
+       30    0.000    0.000    0.000    0.000 viterbi.py:39(<lambda>)
+     2500    0.009    0.000    0.032    0.000 viterbi.py:65(<lambda>)
+     2347   82.641    0.035  156.857    0.067 {filter}
+     4692    0.008    0.000    0.008    0.000 {len}
+      100    0.005    0.000    0.037    0.000 {max}
+      100    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 {method 'read' of 'file' objects}
+        1    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {open}
+
+Viterbi run on around 10 lines.
+545719 function calls in 3.596 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    3.596    3.596 <string>:1(<module>)
+   135050    0.428    0.000    2.848    0.000 HMM.py:37(getPriorProbability)
+    67550    0.118    0.000    0.118    0.000 HMM.py:40(getLikelihoodProbability)
+   135050    1.870    0.000    1.884    0.000 ngrams.py:161(get_frequencies)
+   135050    0.537    0.000    2.421    0.000 ngrams.py:274(get_probability)
+        1    0.276    0.276    3.595    3.595 viterbi.py:29(viterbi)
+       30    0.000    0.000    0.000    0.000 viterbi.py:39(<lambda>)
+    67500    0.227    0.000    0.820    0.000 viterbi.py:66(<lambda>)
+       50    0.000    0.000    0.000    0.000 viterbi.py:71(<lambda>)
+        1    0.000    0.000    0.000    0.000 {filter}
+        1    0.000    0.000    0.000    0.000 {len}
+     2701    0.123    0.000    0.943    0.000 {max}
+     2700    0.004    0.000    0.004    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       28    0.000    0.000    0.000    0.000 {method 'insert' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'read' of 'file' objects}
+        1    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {open}
+        2    0.014    0.007    0.014    0.007 {range}
+
+Viterbi run on an input of 4165 lines. Note that without cProfile, this runs in 25 seconds
+         43095639 function calls in 153.520 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.003    0.003  153.520  153.520 <string>:1(<module>)
+ 10615700   34.076    0.000   96.375    0.000 HMM.py:37(getPriorProbability)
+   208200    0.449    0.000    0.449    0.000 HMM.py:40(getLikelihoodProbability)
+ 10615700   18.966    0.000   18.966    0.000 ngrams.py:166(get_frequencies)
+ 10615700   43.334    0.000   62.299    0.000 ngrams.py:279(get_probability)
+        1    2.084    2.084  153.516  153.516 viterbi.py:29(viterbi)
+     4166    0.007    0.000    0.007    0.000 viterbi.py:38(<lambda>)
+ 10407500   35.488    0.000  129.999    0.000 viterbi.py:57(<lambda>)
+       50    0.000    0.000    0.000    0.000 viterbi.py:70(<lambda>)
+        1    0.007    0.007    0.013    0.013 {filter}
+   208151   18.486    0.000  148.485    0.001 {max}
+   416300    0.611    0.000    0.611    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+     4164    0.009    0.000    0.009    0.000 {method 'insert' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'read' of 'file' objects}
+        1    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {open}
+        1    0.000    0.000    0.000    0.000 {range}
