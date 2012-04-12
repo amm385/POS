@@ -1,49 +1,35 @@
+from Analyzer import Analyzer
+
 train_filename = "../train.pos"
 test_filename = "../test-obs.pos"
 output_file = "../testoutput.txt"
 
-tags = []
+isTest = FALSE #false to use CV, true to use test file
 
-def get_tags(filename):
-    global tags
-    for line in open(filename):
-        space = line.find(' ')
-        if space == -1:
-            #some sort of uncharacteristic line in training file
-            continue
-        tag = line[:space]
-        if tag not in tags:
-            tags.append(tag)
+def get_scores(predicted, actual):
+    tp, fp, fn, tn = 0., 0., 0., 0.
+    for (p,a) in zip(predicted, actual):
+        tn += len(tags) - 2
+        if p == a:
+           tp += 1.
+           tn += 1.
+        else:
+           fp += 1.
+           fn += 1.
+    #http://en.wikipedia.org/wiki/Precision_and_recall
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    #http://en.wikipedia.org/wiki/F1_score
+    f_measure = 2 * precision * recall / (precision + recall)
+    accuracy = (tp + tn) / (tp + tn + fn + fp)
+    return f_measure, accuracy  
     
-def run_baseline(filename):
-    # key: word
-    # value: dictionary of (tag,tag_count) pairs
-    counts = {}
-    for line in open(filename):
-        space = line.find(' ')
-        if space == -1:
-            continue
-        tag = line[:space]
-        word = line[space+1:-1]
-        if word not in counts:
-            counts[word] = {}
-        if tag not in counts[word]:
-            counts[word][tag] = 0
-        counts[word][tag] += 1
-    out = open(output_file,"w")
-    for line in open(filename):
-        space = line.find(' ')
-        if space == -1:
-            continue
-        word = line[space+1:-1]
-        maxtag = max(counts[word], key = counts[word].get)
-        out.write(maxtag + " " + word + "\n")
-    out.close()
-        
 def main():
-    get_tags(train_filename)
-    run_baseline(train_filename)    
-    print "Done!"
+    analyzer = Analyzer(isTest,train_filename,test_filename)
+    (predicted, actual) = analyzer.run()
+    (f_measure, accuracy) = get_scores(predicted,actual)
+    print "F1 Score: " + str(f_measure)
+    print "Accuracy: " + str(accuracy)
 
 if __name__ == '__main__':
     main()
