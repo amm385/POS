@@ -34,15 +34,22 @@ class HiddenMarkovModel():
         
         self.bigram_model = Bigram(prepared_tokens=self.tags, **bigram_parameters)
         
+        self.likelihood_cache, self.prior_cache = {}, {}
+        
     def getPriorProbability(self, bigram):
-        return self.bigram_model.get_probability(bigram)
+        if bigram not in self.prior_cache:
+            self.prior_cache[bigram] = self.bigram_model.get_probability(bigram)
+        return self.prior_cache[bigram]
     
     def getLikelihoodProbability(self, word, tag):
-        # this is provisional
-        if tag not in self.tag_buckets:
-            return 0.
-        if word not in self.tag_buckets[tag]:
-            return 0
-#        return float(len(filter(lambda x: x==word,self.tag_buckets[tag]))) \
-#                / float(len(self.tag_buckets[tag]))
-        return float(self.tag_buckets[tag][word])/float(self.tag_counts[tag])
+        tuple_ = (word,tag)
+        if tuple_ not in self.likelihood_cache:
+            # this is provisional
+            if tag not in self.tag_buckets:
+                self.likelihood_cache[tuple_]= 0.
+            elif word not in self.tag_buckets[tag]:
+                self.likelihood_cache[tuple_]= 0.
+            else:
+                self.likelihood_cache[tuple_] = \
+                float(self.tag_buckets[tag][word])/float(self.tag_counts[tag])
+        return self.likelihood_cache[tuple_]
