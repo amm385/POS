@@ -1,10 +1,12 @@
 from Analyzer import Analyzer
+from ngrams import LAPLACE, GOOD_TURING, NONE
 
 train_filename = "../train.pos"
 test_filename = "../test-obs.pos"
 test_answers = "../POS solution.txt"
 
 isTest = True #false to use CV, true to use test file
+smoothing = GOOD_TURING
 
 def get_score(predicted, actual):
     score = 0.0
@@ -12,16 +14,9 @@ def get_score(predicted, actual):
         if p == a:
             score += 1.0
     return score/len(predicted)
-    #http://en.wikipedia.org/wiki/Precision_and_recall
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
-    #http://en.wikipedia.org/wiki/F1_score
-    f_measure = 2 * precision * recall / (precision + recall)
-    accuracy = (tp + tn) / (tp + tn + fn + fp)
-    return f_measure, accuracy  
     
 def main():
-    analyzer = Analyzer(isTest,train_filename,test_filename,test_answers)
+    analyzer = Analyzer(isTest,train_filename,test_filename,test_answers,smoothing)
     (predicted, actual) = analyzer.run()
     accuracy = get_score(predicted,actual)
     print "Accuracy: " + str(accuracy)

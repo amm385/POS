@@ -6,7 +6,8 @@ CV_VALIDATION_PERCENTAGE = .99995
 SMOOTHING = LAPLACE 
 
 class Analyzer():
-    def __init__(self,isTest,train_filename,test_filename,test_answers):
+    def __init__(self,isTest,train_filename,test_filename,test_answers,
+                    smoothing = LAPLACE):
         self.train_file = train_filename
         self.test_file = test_filename
         self.test_answers = test_answers
@@ -18,6 +19,7 @@ class Analyzer():
                       'EX', 'IN', 'WP$', 'MD', 'NNPS', '-RRB-', 'JJS',
                        'JJR', 'SYM', 'UH']
         self.isTest = isTest
+        self.smoothing = smoothing
     
     def parse_file(self,filename):
         with open(filename, 'r') as fp:
@@ -28,7 +30,7 @@ class Analyzer():
     def run(self):
         if self.isTest:
             print "Running HMM"
-            h = HiddenMarkovModel(self.train_file)
+            h = HiddenMarkovModel(self.train_file,smoothed=self.smoothing)
             print "Running Viterbi"
             predicted = viterbi(h,self.test_file, test = False)
             actual = self.getActual(self.parse_file(self.test_answers))
@@ -40,7 +42,7 @@ class Analyzer():
             train_text = "".join(["%s %s\n" % (p,t) for [p,t] in train])
             test_text = "".join(["%s\n" % t for [p,t] in test])
             print "Running HMM"
-            h = HiddenMarkovModel(text=train_text, smoothed=GOOD_TURING)
+            h = HiddenMarkovModel(text=train_text, smoothed=self.smoothing)
             print "Running Viterbi"
             predicted = viterbi(h,text=test_text, test=False)
             actual = self.getActual(test)
