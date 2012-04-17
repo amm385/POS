@@ -38,22 +38,29 @@ class HiddenMarkovModel():
         self.likelihood_cache, self.prior_cache, self.in_vocab_cache = {}, {}, {}
         
     def getPriorProbability(self, bigram):
-        if bigram not in self.prior_cache:
-            self.prior_cache[bigram] = self.bigram_model.get_probability(bigram)
-        return self.prior_cache[bigram]
+        first, second = bigram
+        if first not in self.prior_cache:
+            self.prior_cache[first] = { second: self.bigram_model.get_probability(bigram)}
+        elif second not in self.prior_cache[first]:
+            self.prior_cache[first][second] = self.bigram_model.get_probability(bigram)
+        return self.prior_cache[first][second]
     
     def getLikelihoodProbability(self, word, tag):
-        tuple_ = (word,tag)
-        if tuple_ not in self.likelihood_cache:
-            # this is provisional
-            if tag not in self.tag_buckets:
-                self.likelihood_cache[tuple_]= 0.
-            elif word not in self.tag_buckets[tag]:
-                self.likelihood_cache[tuple_]= 0.
+        try:
+            value = self.likelihood_cache[word][tag]
+        except KeyError:
+            if tag not in self.tag_buckets or word not in self.tag_buckets[tag]:
+                value = 0.
             else:
-                self.likelihood_cache[tuple_] = \
-                float(self.tag_buckets[tag][word])/float(self.tag_counts[tag])
-        return self.likelihood_cache[tuple_]
+                value = float(self.tag_buckets[tag][word])/float(self.tag_counts[tag])
+            
+            if word not in self.likelihood_cache:
+                self.likelihood_cache[word] = { tag: value}
+            elif tag not in self.likelihood_cache[word]:
+                self.likelihood_cache[word][tag] = value
+                
+        return value
+  
     
     def isInVocabulary(self, word):
         if word not in self.in_vocab_cache:
