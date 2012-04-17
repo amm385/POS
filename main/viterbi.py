@@ -7,7 +7,7 @@ import HMM
 import cProfile
 from math import log
 
-SMALL_NUM = 1. ** -100
+SMALL_NUM = 10. ** -100
 """
     TODO:
         - Only use the tags encountered in training, and use smoothing/unknown word 
@@ -97,6 +97,8 @@ def viterbi(hmm, filename=None, text=None):
         cur_tag = backpointer[cur_tag][timestep]
         sequence.insert(0,cur_tag)
     
-    return sequence
+    tokens.insert(0, '<s>')
+    zip(sequence, tokens)
+    return [' '.join(x) for x in zip(sequence, tokens)]
 
             
