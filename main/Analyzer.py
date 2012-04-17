@@ -2,12 +2,14 @@ from viterbi import viterbi
 from HMM import HiddenMarkovModel
 from ngrams import LAPLACE, GOOD_TURING, NONE
 
-CV_VALIDATION_PERCENTAGE = .95
+CV_VALIDATION_PERCENTAGE = .99995
 SMOOTHING = LAPLACE 
+
 class Analyzer():
-    def __init__(self,isTest,train_filename,test_filename):
+    def __init__(self,isTest,train_filename,test_filename,test_answers):
         self.train_file = train_filename
         self.test_file = test_filename
+        self.test_answers = test_answers
         self.tags = ['PRP$', 'VBG', 'VBD', '``', 'VBN', 'POS', "''",
                   'VBP', 'WDT', 'JJ', 'WP', 'VBZ', 'DT', '#',
                    'RP', '$', 'NN', '<s>', 'FW', ',', '.', 'TO',
@@ -25,9 +27,12 @@ class Analyzer():
     
     def run(self):
         if self.isTest:
-            h = HiddenMarkovModel(self.train_file, smoothed=SMOOTHING)
-            out = viterbi(h,self.test_file)
-            return (out,[])
+            print "Running HMM"
+            h = HiddenMarkovModel(self.train_file)
+            print "Running Viterbi"
+            predicted = viterbi(h,self.test_file, test = False)
+            actual = self.getActual(self.parse_file(self.test_answers))
+            return (predicted,actual)
         else:
             print "Splitting Data"
             (train,test) = self.splitCV(self.parse_file(self.train_file),CV_VALIDATION_PERCENTAGE)
@@ -42,10 +47,7 @@ class Analyzer():
             return (predicted,actual)
     
     def getActual(self,list):
-        out = []
-        for [pos,token] in list:
-            out.append(pos)
-        return out
+        return [p for [p,t] in list]
     
     def run_baseline(self, train_file, test_file):
         # key: word
