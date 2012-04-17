@@ -23,7 +23,8 @@ class Analyzer():
         with open(filename, 'r') as fp:
             text = fp.read()
         text = map(lambda x: x.strip().split(' '), text.split('\n'))
-        return text
+        list_ = filter(lambda x: x[0], text)
+        return list_
     
     def run(self):
         if self.isTest:
@@ -31,8 +32,8 @@ class Analyzer():
             h = HiddenMarkovModel(self.train_file,smoothed=self.smoothing)
             print "Running Viterbi"
             predicted = viterbi(h,self.test_file, test = False)
-            actual = self.getActual(self.parse_file(self.test_answers))
-            return (predicted,actual)
+            actual, tokens = zip(*self.parse_file(self.test_answers))
+            return (predicted,actual,tokens)
         else:
             print "Splitting Data"
             (train,test) = self.splitCV(self.parse_file(self.train_file),self.cv_validation_percentage)
@@ -46,8 +47,9 @@ class Analyzer():
             actual = self.getActual(test)
             return (predicted,actual)
     
-    def getActual(self,list):
-        return [p for [p,t] in list]
+    def getActual(self,list_):
+        list_ = filter(lambda x: x[0], list_)
+        return [p for [p,t] in list_]
     
     def run_baseline(self, train_file, test_file):
         # key: word
