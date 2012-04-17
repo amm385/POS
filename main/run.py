@@ -4,7 +4,7 @@ train_filename = "../train.pos"
 test_filename = "../test-obs.pos"
 output_file = "../testoutput.txt"
 
-isTest = FALSE #false to use CV, true to use test file
+isTest = False #false to use CV, true to use test file
 
 def get_scores(predicted, actual):
     tp, fp, fn, tn = 0., 0., 0., 0.
@@ -27,9 +27,14 @@ def get_scores(predicted, actual):
 def main():
     analyzer = Analyzer(isTest,train_filename,test_filename)
     (predicted, actual) = analyzer.run()
-    (f_measure, accuracy) = get_scores(predicted,actual)
-    print "F1 Score: " + str(f_measure)
-    print "Accuracy: " + str(accuracy)
+    #(f_measure, accuracy) = get_scores(predicted,actual)
+    #print "F1 Score: " + str(f_measure)
+    #print "Accuracy: " + str(accuracy)
+    score = 0.0
+    for i in range(len(predicted)):
+        if predicted[i] == actual[i]:
+            score += 1.0
+    print "Accuracy: " + str(score/len(predicted))
 
 if __name__ == '__main__':
     main()
