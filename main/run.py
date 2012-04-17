@@ -2,7 +2,6 @@ from Analyzer import Analyzer
 
 train_filename = "../train.pos"
 test_filename = "../test-obs.pos"
-output_file = "../testoutput.txt"
 
 isTest = False #false to use CV, true to use test file
 
@@ -26,7 +25,8 @@ def get_scores(predicted, actual):
     
 def main():
     analyzer = Analyzer(isTest,train_filename,test_filename)
-    (predicted, actual) = analyzer.run()
+    out = analyzer.run_baseline(train_filename,test_filename)
+    '''(predicted, actual) = analyzer.run()
     #(f_measure, accuracy) = get_scores(predicted,actual)
     #print "F1 Score: " + str(f_measure)
     #print "Accuracy: " + str(accuracy)
@@ -35,6 +35,7 @@ def main():
         if predicted[i] == actual[i]:
             score += 1.0
     print "Accuracy: " + str(score/len(predicted))
+	'''
 
 if __name__ == '__main__':
     main()

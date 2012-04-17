@@ -46,11 +46,11 @@ class Analyzer():
             out.append(pos)
         return out
     
-    def run_baseline(self, filename):
+    def run_baseline(self, train_file, test_file):
         # key: word
         # value: dictionary of (tag,tag_count) pairs
         counts = {}
-        for line in open(filename):
+        for line in open(train_file):
             space = line.find(' ')
             if space == -1:
                 continue
@@ -62,14 +62,18 @@ class Analyzer():
                 counts[word][tag] = 0
             counts[word][tag] += 1
         out = []
-        for line in open(filename):
-            space = line.find(' ')
-            if space == -1:
-                continue
-            word = line[space+1:-1]
-            maxtag = max(counts[word], key = counts[word].get)
+        file = open("../testoutput.txt","w")
+        for line in open(test_file):
+            word = line[:-1]
+            if word not in counts:
+                maxtag = "NN"
+            else:
+                maxtag = max(counts[word], key = counts[word].get)
             out.append(maxtag)
-        return out
+            file.write(maxtag + " " + word + "\n")
+            #print (word,maxtag)
+        file.close()
+        return
     
     def get_tags(self,filename):
         for line in open(filename):
