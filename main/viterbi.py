@@ -32,7 +32,7 @@ TAGS = training_tags
 #        'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB', ',', '.', '<s>', '-RRB-', ]+training_tags)
 
 
-def viterbi(hmm, filename=None, text=None):
+def viterbi(hmm, filename=None, text=None, test=True):
     if filename:
         with open(filename) as fp:
                 text = fp.read()
@@ -98,7 +98,6 @@ def viterbi(hmm, filename=None, text=None):
         sequence.insert(0,cur_tag)
     
     tokens.insert(0, '<s>')
-    zip(sequence, tokens)
-    return [' '.join(x) for x in zip(sequence, tokens)]
-
+    return [' '.join(x) for x in zip(sequence, tokens)] if test else sequence
+    
             

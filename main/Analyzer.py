@@ -1,7 +1,9 @@
 from viterbi import viterbi
 from HMM import HiddenMarkovModel
+from ngrams import LAPLACE, GOOD_TURING, NONE
 
-CV_VALIDATION_PERCENTAGE = .9
+CV_VALIDATION_PERCENTAGE = .95
+SMOOTHING = LAPLACE 
 class Analyzer():
     def __init__(self,isTest,train_filename,test_filename):
         self.train_file = train_filename
@@ -23,7 +25,7 @@ class Analyzer():
     
     def run(self):
         if self.isTest:
-            h = HiddenMarkovModel(self.train_file)
+            h = HiddenMarkovModel(self.train_file, smoothed=SMOOTHING)
             out = viterbi(h,self.test_file)
             return (out,[])
         else:
@@ -33,12 +35,10 @@ class Analyzer():
             train_text = "".join(["%s %s\n" % (p,t) for [p,t] in train])
             test_text = "".join(["%s\n" % t for [p,t] in test])
             print "Running HMM"
-            h = HiddenMarkovModel(text=train_text)
+            h = HiddenMarkovModel(text=train_text, smoothed=GOOD_TURING)
             print "Running Viterbi"
-            predicted = viterbi(h,text=test_text)
+            predicted = viterbi(h,text=test_text, test=False)
             actual = self.getActual(test)
-            for (p,a) in zip(predicted,actual):
-                print (p,a)
             return (predicted,actual)
     
     def getActual(self,list):

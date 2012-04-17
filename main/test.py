@@ -9,41 +9,33 @@ from ngrams import NONE, GOOD_TURING, LAPLACE
 import cProfile
 import time
 
-hmm = HiddenMarkovModel(filename='../train.pos')
+hmm = HiddenMarkovModel(filename='../train.pos', smoothed=LAPLACE)
 
-filename='test130.txt'
-output_filename = "test130-output.txt"
+filename = '../test-obs.pos'
+output_filename = "final-test-output.txt"
 string=\
 """
 <s>
-Frank
-Carlucci
-III
-was
-named
-to
-this
-telecommunications
-company
-'s
-board
+The
+U.S.
+has
+befriended
+and
+later
+turned
+against
+many
+dictators
 ,
-filling
-the
-vacancy
-created
-by
-the
-death
-of
-William
-Sobey
-last
-May
+but
+none
+quite
+so
+resourceful
 .
 """
 
-use_filename = True
+use_filename = False
 
 #cProfile.run("viterbi(hmm, filename='../test-big-sample.pos')")
 
@@ -56,7 +48,7 @@ if use_filename:
 else:
     text = string 
     #"\n".join(string.split(' '))
-    pos = viterbi(hmm, text=text)
+    pos = viterbi(hmm, text=text, test=False)
     toc = time.clock()
     print str(pos)
 print str(toc-tic)

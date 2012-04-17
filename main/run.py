@@ -25,7 +25,11 @@ def get_scores(predicted, actual):
     
 def main():
     analyzer = Analyzer(isTest,train_filename,test_filename)
-    out = analyzer.run_baseline(train_filename,test_filename)
+    predicted, actual = analyzer.run()
+    
+    print str(float(len(filter(lambda x: x[0] == x[1], zip(predicted,actual)))) \
+              / float(len(actual)))
+    
     '''(predicted, actual) = analyzer.run()
     #(f_measure, accuracy) = get_scores(predicted,actual)
     #print "F1 Score: " + str(f_measure)
