@@ -1,6 +1,7 @@
 from viterbi import viterbi
 from HMM import HiddenMarkovModel
 
+CV_VALIDATION_PERCENTAGE = .9
 class Analyzer():
     def __init__(self,isTest,train_filename,test_filename):
         self.train_file = train_filename
@@ -27,7 +28,7 @@ class Analyzer():
             return (out,[])
         else:
             print "Splitting Data"
-            (train,test) = self.splitCV(self.parse_file(self.train_file),0.9999568)
+            (train,test) = self.splitCV(self.parse_file(self.train_file),CV_VALIDATION_PERCENTAGE)
             print "Converting Lists"
             train_text = "".join(["%s %s\n" % (p,t) for [p,t] in train])
             test_text = "".join(["%s\n" % t for [p,t] in test])

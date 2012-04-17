@@ -152,8 +152,9 @@ class Bigram():
 		
 		#Probabilities
 		self.bigrams = None
-		
 		self.get_frequencies()
+		
+		self.prob_cache = {}
 		
 	def get_num_tokens(self):
 		return len(self.tokens)
@@ -275,8 +276,14 @@ class Bigram():
 			adjusted_numerator_count = adjusted_bigram_counts[bi_freqs[bigram]] 
 		
 		return adjusted_numerator_count / self.get_gt_bigram_count(first)
-		
+	
 	def get_probability(self, bigram):
+		if bigram not in self.prob_cache:
+			self.prob_cache[bigram] = \
+				self.get_probability_helper(bigram)
+		return self.prob_cache[bigram]
+	
+	def get_probability_helper(self, bigram):
 		(first, second) = bigram
 		(uni_freqs, bi_freqs) = self.get_frequencies()
 

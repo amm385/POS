@@ -11,6 +11,7 @@ import cProfile
           handling to deal with unencountered tags
         - Make special tagging rule for numbers that automatically tags them as CD
 """
+# pulled from train set
 training_tags = ['PRP$', 'VBG', 'VBD', '``', 'VBN', 'POS', "''",
                   'VBP', 'WDT', 'JJ', 'WP', 'VBZ', 'DT', '#',
                    'RP', '$', 'NN', '<s>', 'FW', ',', '.', 'TO',
@@ -20,10 +21,12 @@ training_tags = ['PRP$', 'VBG', 'VBD', '``', 'VBN', 'POS', "''",
                        'JJR', 'SYM', 'UH']
 
 # Penn Treebank Tags + extra tags added for this class
-TAGS = set(['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 
-        'MD', 'NN', 'NNS', 'NP', 'NPS', 'PDT', 'POS', 'PP', 'PP$', 'RB', 
-        'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 
-        'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB', ',', '.', '<s>', '-RRB-', ]+training_tags)
+TAGS = training_tags
+
+#set(['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 
+#        'MD', 'NN', 'NNS', 'NP', 'NPS', 'PDT', 'POS', 'PP', 'PP$', 'RB', 
+#        'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 
+#        'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB', ',', '.', '<s>', '-RRB-', ]+training_tags)
 
 
 def viterbi(hmm, filename=None, text=None):
@@ -54,16 +57,23 @@ def viterbi(hmm, filename=None, text=None):
     timestep = 0
     for token in tokens[1:]:
         timestep += 1
+        if timestep >= 123:
+            pass
         for tag in TAGS:
+            # to address issue where 0% likelihood for a given word destroys
+            # the rest of the tag sequence
             best_tag = max(TAGS, key=lambda t: viterbi[t][timestep-1] * \
-                            hmm.getPriorProbability((t, tag)))
+                        hmm.getPriorProbability((t, tag)))
             
+            if not hmm.isInVocabulary(token):
+                best_tag_prob = viterbi[best_tag][timestep-1] * \
+                            hmm.getPriorProbability((best_tag, tag))
+            else:
+                best_tag_prob = viterbi[best_tag][timestep-1] * \
+                                hmm.getPriorProbability((best_tag, tag)) * \
+                                hmm.getLikelihoodProbability(token, tag)
+                        
             backpointer[tag].append(best_tag)
-
-            best_tag_prob = viterbi[best_tag][timestep-1] * \
-                            hmm.getPriorProbability((best_tag, tag)) * \
-                            hmm.getLikelihoodProbability(token, tag)
-                            
             viterbi[tag].append(best_tag_prob)
         
     # backtracing 

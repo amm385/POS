@@ -1,4 +1,5 @@
 from ngrams import Bigram
+from ngrams import LAPLACE, GOOD_TURING, NONE
 
 class HiddenMarkovModel():
     
@@ -18,6 +19,7 @@ class HiddenMarkovModel():
         self.tags = pairs[0]
         self.observations = pairs[1]
         
+        self.observation_set = set(self.observations)
         self.tag_buckets = {}
         self.tag_counts = {}
         for index, tag in enumerate(self.tags):
@@ -27,14 +29,13 @@ class HiddenMarkovModel():
                     self.tag_buckets[tag][self.observations[index]] += 1
                 else:
                     self.tag_buckets[tag][self.observations[index]] = 1
-#                self.tag_buckets[tag].append(self.observations[index])
             else:
                 self.tag_counts[tag] = 1
                 self.tag_buckets[tag]= {self.observations[index]: 1}
         
         self.bigram_model = Bigram(prepared_tokens=self.tags, **bigram_parameters)
         
-        self.likelihood_cache, self.prior_cache = {}, {}
+        self.likelihood_cache, self.prior_cache, self.in_vocab_cache = {}, {}, {}
         
     def getPriorProbability(self, bigram):
         if bigram not in self.prior_cache:
@@ -53,3 +54,8 @@ class HiddenMarkovModel():
                 self.likelihood_cache[tuple_] = \
                 float(self.tag_buckets[tag][word])/float(self.tag_counts[tag])
         return self.likelihood_cache[tuple_]
+    
+    def isInVocabulary(self, word):
+        if word not in self.in_vocab_cache:
+            self.in_vocab_cache[word] = word in self.observation_set
+        return self.in_vocab_cache[word]
