@@ -1,6 +1,7 @@
 from viterbi import viterbi
 from HMM import HiddenMarkovModel
 from ngrams import LAPLACE, GOOD_TURING, NONE
+import time
 
 class Analyzer():
     def __init__(self,isTest,train_filename,test_filename,test_answers,
@@ -31,7 +32,10 @@ class Analyzer():
             print "Running HMM"
             h = HiddenMarkovModel(self.train_file,smoothed=self.smoothing)
             print "Running Viterbi"
+            toc = time.clock()
             predicted = viterbi(h,self.test_file, test = False)
+            tic = time.clock()
+            print "Viterbi ran in %f seconds"%(tic-toc)
             actual, tokens = zip(*self.parse_file(self.test_answers))
             return (predicted,actual,tokens)
         else:

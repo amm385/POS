@@ -5,6 +5,9 @@ train_filename = "../train.pos"
 test_filename = "../test-obs.pos"
 test_answers = "../POS solution.txt"
 
+#test_filename = "test100.txt"
+#test_answers = "POS100_solution.txt"
+
 isTest = True #false to use CV, true to use test file
 smoothing = NONE
 cv_validation_percentage = .95
