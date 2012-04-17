@@ -2,12 +2,9 @@ from viterbi import viterbi
 from HMM import HiddenMarkovModel
 from ngrams import LAPLACE, GOOD_TURING, NONE
 
-CV_VALIDATION_PERCENTAGE = .99995
-SMOOTHING = LAPLACE 
-
 class Analyzer():
     def __init__(self,isTest,train_filename,test_filename,test_answers,
-                    smoothing = LAPLACE):
+                    smoothing = LAPLACE,cv_validation_percentage = .95):
         self.train_file = train_filename
         self.test_file = test_filename
         self.test_answers = test_answers
@@ -20,6 +17,7 @@ class Analyzer():
                        'JJR', 'SYM', 'UH']
         self.isTest = isTest
         self.smoothing = smoothing
+        self.cv_validation_percentage = cv_validation_percentage
     
     def parse_file(self,filename):
         with open(filename, 'r') as fp:
@@ -37,7 +35,7 @@ class Analyzer():
             return (predicted,actual)
         else:
             print "Splitting Data"
-            (train,test) = self.splitCV(self.parse_file(self.train_file),CV_VALIDATION_PERCENTAGE)
+            (train,test) = self.splitCV(self.parse_file(self.train_file),self.cv_validation_percentage)
             print "Converting Lists"
             train_text = "".join(["%s %s\n" % (p,t) for [p,t] in train])
             test_text = "".join(["%s\n" % t for [p,t] in test])
